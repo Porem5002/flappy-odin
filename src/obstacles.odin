@@ -19,7 +19,6 @@ ObstacleColumn :: struct
 {
     active: bool,
     bird_inscore: bool,
-    index: int,
     middle: rl.Vector2,
 }
 
@@ -108,13 +107,11 @@ add_obstacle_at_pos :: proc(mid: rl.Vector2)
 
         if(!e.active)
         {
-            o.index = i
             e^ = o
             return
         }            
     }
 
-    o.index = len(obstacle_pool.pool)
     append_elem(&obstacle_pool.pool, o)
 }
 
