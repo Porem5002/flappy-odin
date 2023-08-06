@@ -1,6 +1,7 @@
 package main
 
 import "core:fmt"
+import "core:strings"
 import c "core:c/libc"
 
 import rl "vendor:raylib"
@@ -44,7 +45,8 @@ main :: proc()
 setup_game :: proc()
 {
     state = .START
-    
+    score = 0
+
     bird = {
         position = rl.Vector2 { 0, (WINDOW_HEIGHT - BIRD_HEIGHT) / 2.0 },
         velocity = {}
@@ -98,6 +100,11 @@ draw :: proc()
         rl.DrawRectangleRec(lower_rect, rl.RED)
     }
 
+    s := fmt.tprint(score)
+    cs := strings.clone_to_cstring(s)
+
+    draw_text_centered_horizontaly(25, rl.GetFontDefault(), cs, 55, 3, rl.YELLOW) 
+
     if(state == .START)
     {
         draw_text_centered(rl.GetFontDefault(), "Press ENTER to start the game", 35, 3, rl.YELLOW)
@@ -106,6 +113,15 @@ draw :: proc()
     {
         draw_text_centered(rl.GetFontDefault(), "YOU LOST", 55, 5, rl.YELLOW)
     }
+}
+
+draw_text_centered_horizontaly :: proc(y: f32, font: rl.Font, text: cstring, font_size: f32, spacing: f32, color: rl.Color)
+{
+    text_size := rl.MeasureTextEx(font, text, font_size, spacing)
+
+    text_position := rl.Vector2 { (WINDOW_WIDTH - text_size.x)/2, y }
+    
+    rl.DrawTextEx(font, text, text_position, font_size, spacing, color)
 }
 
 draw_text_centered :: proc(font: rl.Font, text: cstring, font_size: f32, spacing: f32, color: rl.Color)

@@ -4,6 +4,8 @@ import "core:fmt"
 
 import rl "vendor:raylib"
 
+score : uint = 0
+
 OBSTACLE_VERTICAL_SPACING :: 140
 
 OBSTACLE_WIDTH :: 100
@@ -16,6 +18,7 @@ OBSTACLE_SPAWN_COOLDOWN :: 2.55
 ObstacleColumn :: struct
 {
     active: bool,
+    bird_inscore: bool,
     index: int,
     middle: rl.Vector2,
 }
@@ -49,6 +52,18 @@ update_obstacles :: proc(delta_time: f32)
            rl.CheckCollisionRecs(bird_rect, lower_rect))
         {
             state = .LOST
+        }
+
+        mid_rect := get_middle_obstacle_rect(e.middle)
+
+        if(!e.bird_inscore && rl.CheckCollisionRecs(bird_rect, mid_rect))
+        {
+            e.bird_inscore = true
+        }
+        else if(e.bird_inscore && !rl.CheckCollisionRecs(bird_rect, mid_rect))
+        {
+            e.bird_inscore = false
+            score += 1
         }
 
         if(e.middle.x <= -OBSTACLE_WIDTH/2)
@@ -101,6 +116,18 @@ add_obstacle_at_pos :: proc(mid: rl.Vector2)
 
     o.index = len(obstacle_pool.pool)
     append_elem(&obstacle_pool.pool, o)
+}
+
+get_middle_obstacle_rect :: proc(mid: rl.Vector2) -> rl.Rectangle
+{
+    pos := rl.Vector2 { -OBSTACLE_WIDTH/2, -OBSTACLE_VERTICAL_SPACING/2 } + mid
+
+    return rl.Rectangle {
+        x = pos.x,
+        y = pos.y,
+        width = OBSTACLE_WIDTH,
+        height = OBSTACLE_VERTICAL_SPACING,
+    }
 }
 
 get_upper_obstacle_rect :: proc(mid: rl.Vector2) -> rl.Rectangle
