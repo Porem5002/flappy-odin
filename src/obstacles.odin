@@ -41,13 +41,13 @@ update_obstacles :: proc(delta_time: f32)
 
         e.position += rl.Vector2 { -1, 0 } * OBSTACLE_SPEED * delta_time
 
-        /*bird_rect := get_bird_rect()
+        bird_rect := get_bird_rect()
         obstacle_rect := get_obstacle_rect(e)
 
         if(rl.CheckCollisionRecs(bird_rect, obstacle_rect))
         {
-            fmt.print("Bird Lost!!")
-        }*/
+            state = .LOST
+        }
 
         if(e.position.x < 0)
         {
@@ -72,6 +72,15 @@ update_obstacle_spawning :: proc(delta_time: f32)
 
     add_obstacle_at_pos(up_pos)
     add_obstacle_at_pos(down_pos)
+}
+
+clear_obstacles :: proc()
+{
+    for i in 0..<len(obstacle_pool.pool)
+    {
+        e := &obstacle_pool.pool[i]
+        e.active = false
+    }
 }
 
 add_obstacle_at_pos :: proc(pos: rl.Vector2)
