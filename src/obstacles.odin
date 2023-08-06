@@ -4,25 +4,25 @@ import "core:fmt"
 
 import rl "vendor:raylib"
 
-OBSTACLE_VERTICAL_SPACING :: 68
+OBSTACLE_VERTICAL_SPACING :: 140
 
 OBSTACLE_WIDTH :: 100
 OBSTACLE_HEIGHT :: 600
 OBSTACLE_SIZE :: rl.Vector2 { OBSTACLE_WIDTH, OBSTACLE_HEIGHT }
 
 OBSTACLE_SPEED :: 100
-OBSTACLE_SPAWN_COOLDOWN :: 2.28
+OBSTACLE_SPAWN_COOLDOWN :: 2.55
 
-Obstacle :: struct
+ObstacleColumn :: struct
 {
     active: bool,
     index: int,
-    position: rl.Vector2,
+    middle: rl.Vector2,
 }
 
 ObstaclePool :: struct
 {
-    pool : [dynamic]Obstacle,
+    pool : [dynamic]ObstacleColumn,
     cooldown : f32,
 }
 
@@ -39,17 +39,19 @@ update_obstacles :: proc(delta_time: f32)
             continue
         }
 
-        e.position += rl.Vector2 { -1, 0 } * OBSTACLE_SPEED * delta_time
+        e.middle += rl.Vector2 { -1, 0 } * OBSTACLE_SPEED * delta_time
 
         bird_rect := get_bird_rect()
-        obstacle_rect := get_obstacle_rect(e)
+        upper_rect := get_upper_obstacle_rect(e.middle)
+        lower_rect := get_lower_obstacle_rect(e.middle)
 
-        if(rl.CheckCollisionRecs(bird_rect, obstacle_rect))
+        if(rl.CheckCollisionRecs(bird_rect, upper_rect) ||
+           rl.CheckCollisionRecs(bird_rect, lower_rect))
         {
             state = .LOST
         }
 
-        if(e.position.x < 0)
+        if(e.middle.x <= -OBSTACLE_WIDTH/2)
         {
             e.active = false
         }
@@ -65,13 +67,8 @@ update_obstacle_spawning :: proc(delta_time: f32)
     }
 
     obstacle_pool.cooldown = OBSTACLE_SPAWN_COOLDOWN
-    center_pos := rl.Vector2 { WINDOW_WIDTH, f32(rl.GetRandomValue(15, 95)) / 100.0 * WINDOW_HEIGHT }
-
-    up_pos := center_pos + rl.Vector2 { 0, -1 } * (OBSTACLE_VERTICAL_SPACING + OBSTACLE_HEIGHT)
-    down_pos := center_pos + rl.Vector2 { 0, 1 } * OBSTACLE_VERTICAL_SPACING
-
-    add_obstacle_at_pos(up_pos)
-    add_obstacle_at_pos(down_pos)
+    mid := rl.Vector2 { WINDOW_WIDTH + OBSTACLE_WIDTH/2, f32(rl.GetRandomValue(15, 95)) / 100.0 * WINDOW_HEIGHT }
+    add_obstacle_at_pos(mid)
 }
 
 clear_obstacles :: proc()
@@ -83,11 +80,11 @@ clear_obstacles :: proc()
     }
 }
 
-add_obstacle_at_pos :: proc(pos: rl.Vector2)
+add_obstacle_at_pos :: proc(mid: rl.Vector2)
 {
-    o := Obstacle {
+    o := ObstacleColumn {
         active = true,
-        position = pos
+        middle = mid
     }
 
     for i in 0..<len(obstacle_pool.pool)
@@ -106,24 +103,26 @@ add_obstacle_at_pos :: proc(pos: rl.Vector2)
     append_elem(&obstacle_pool.pool, o)
 }
 
-get_obstacle_rect_ptr :: proc(obstacle: ^Obstacle) -> rl.Rectangle
+get_upper_obstacle_rect :: proc(mid: rl.Vector2) -> rl.Rectangle
 {
+    pos := rl.Vector2 { -OBSTACLE_WIDTH/2, -(OBSTACLE_VERTICAL_SPACING/2+OBSTACLE_HEIGHT) } + mid
+
     return rl.Rectangle {
-        x = obstacle.position.x,
-        y = obstacle.position.y,
+        x = pos.x,
+        y = pos.y,
         width = OBSTACLE_WIDTH,
         height = OBSTACLE_HEIGHT,
     }
 }
 
-get_obstacle_rect_struct :: proc(obstacle: Obstacle) -> rl.Rectangle
+get_lower_obstacle_rect :: proc(mid: rl.Vector2) -> rl.Rectangle
 {
+    pos := rl.Vector2 { -OBSTACLE_WIDTH/2, OBSTACLE_VERTICAL_SPACING/2 } + mid
+
     return rl.Rectangle {
-        x = obstacle.position.x,
-        y = obstacle.position.y,
+        x = pos.x,
+        y = pos.y,
         width = OBSTACLE_WIDTH,
         height = OBSTACLE_HEIGHT,
     }
 }
-
-get_obstacle_rect :: proc { get_obstacle_rect_ptr, get_obstacle_rect_struct }

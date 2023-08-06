@@ -91,8 +91,11 @@ draw :: proc()
             continue
         }
 
-        rect := get_obstacle_rect(e)
-        rl.DrawRectangleRec(rect, rl.RED)
+        upper_rect := get_upper_obstacle_rect(e.middle)
+        lower_rect := get_lower_obstacle_rect(e.middle)
+
+        rl.DrawRectangleRec(upper_rect, rl.RED)
+        rl.DrawRectangleRec(lower_rect, rl.RED)
     }
 
     if(state == .START)
