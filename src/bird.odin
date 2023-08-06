@@ -2,8 +2,8 @@ package main
 
 import rl "vendor:raylib"
 
-BIRD_GRAVITY_FORCE :: 18
-BIRD_JUMP_FORCE :: 5
+BIRD_GRAVITY_FORCE :: 36
+BIRD_JUMP_FORCE :: 8
 
 BIRD_WIDTH :: 40
 BIRD_HEIGHT :: 40
