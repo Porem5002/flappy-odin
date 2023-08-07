@@ -21,11 +21,11 @@ state : State = {}
 
 main :: proc()
 {
-    setup_game()
-
     rl.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Raylib wth Odin!")
-
     rl.SetTargetFPS(TARGET_FPS)
+
+    load_assets()
+    setup_game()
 
     for !rl.WindowShouldClose()
     {
@@ -39,6 +39,7 @@ main :: proc()
         rl.EndDrawing()
     }
 
+    unload_assets()
     rl.CloseWindow()
 }
 
@@ -86,6 +87,8 @@ draw :: proc()
     rl.DrawRectangleRec(bird_rect, rl.BLACK)
     
     // Draw obstacles
+    obstacle_texture := get_asset(.TEXTURE_OBSTACLE)
+
     for e in obstacle_pool.pool
     {
         if(!e.active)
@@ -96,8 +99,8 @@ draw :: proc()
         upper_rect := get_upper_obstacle_rect(e.middle)
         lower_rect := get_lower_obstacle_rect(e.middle)
 
-        rl.DrawRectangleRec(upper_rect, rl.RED)
-        rl.DrawRectangleRec(lower_rect, rl.RED)
+        rl.DrawTextureV(obstacle_texture, rl.Vector2 { upper_rect.x, upper_rect.y }, rl.WHITE)
+        rl.DrawTextureV(obstacle_texture, rl.Vector2 { lower_rect.x, lower_rect.y }, rl.WHITE)
     }
 
     s := fmt.tprint(score)
