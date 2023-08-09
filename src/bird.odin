@@ -31,12 +31,10 @@ update_bird :: proc(delta_time: f32)
     bird.position += bird.velocity
 }
 
-get_bird_rect :: proc() -> rl.Rectangle
+get_bird_shape :: proc() -> Shape
 {
-    return rl.Rectangle {
-        x = bird.position.x,
-        y = bird.position.y,
-        width = BIRD_WIDTH,
-        height = BIRD_HEIGHT,
+    return ShapeRect {
+        center = bird.position,
+        size = BIRD_SIZE,
     }
 }

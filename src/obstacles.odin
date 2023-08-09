@@ -43,29 +43,29 @@ update_obstacles :: proc(delta_time: f32)
 
         e.middle += rl.Vector2 { -1, 0 } * OBSTACLE_SPEED * delta_time
 
-        bird_rect := get_bird_rect()
-        upper_rect := get_upper_obstacle_rect(e.middle)
-        lower_rect := get_lower_obstacle_rect(e.middle)
+        bird_shape := get_bird_shape()
+        upper_shape := get_upper_obstacle_shape(e.middle)
+        lower_shape := get_lower_obstacle_shape(e.middle)
 
-        if(rl.CheckCollisionRecs(bird_rect, upper_rect) ||
-           rl.CheckCollisionRecs(bird_rect, lower_rect))
+        if(check_shape_collision(bird_shape, upper_shape) ||
+           check_shape_collision(bird_shape, lower_shape))
         {
             state = .LOST
         }
 
-        mid_rect := get_middle_obstacle_rect(e.middle)
+        score_area := get_score_area_shape(e.middle)
 
-        if(!e.bird_inscore && rl.CheckCollisionRecs(bird_rect, mid_rect))
+        if(!e.bird_inscore && check_shape_collision(bird_shape, score_area))
         {
             e.bird_inscore = true
         }
-        else if(e.bird_inscore && !rl.CheckCollisionRecs(bird_rect, mid_rect))
+        else if(e.bird_inscore && !check_shape_collision(bird_shape, score_area))
         {
             e.bird_inscore = false
             score += 1
         }
 
-        if(e.middle.x <= -OBSTACLE_WIDTH/2)
+        if(e.middle.x <= -OBSTACLE_WIDTH)
         {
             e.active = false
         }
@@ -98,7 +98,7 @@ add_obstacle_at_pos :: proc(mid: rl.Vector2)
 {
     o := ObstacleColumn {
         active = true,
-        middle = mid
+        middle = mid,
     }
 
     for i in 0..<len(obstacle_pool.pool)
@@ -115,38 +115,30 @@ add_obstacle_at_pos :: proc(mid: rl.Vector2)
     append_elem(&obstacle_pool.pool, o)
 }
 
-get_middle_obstacle_rect :: proc(mid: rl.Vector2) -> rl.Rectangle
+get_score_area_shape :: proc(mid: rl.Vector2) -> ShapeRect
 {
-    pos := rl.Vector2 { -OBSTACLE_WIDTH/2, -OBSTACLE_VERTICAL_SPACING/2 } + mid
-
-    return rl.Rectangle {
-        x = pos.x,
-        y = pos.y,
-        width = OBSTACLE_WIDTH,
-        height = OBSTACLE_VERTICAL_SPACING,
+    return {
+        center = mid,
+        size = { OBSTACLE_WIDTH, OBSTACLE_VERTICAL_SPACING },
     }
 }
 
-get_upper_obstacle_rect :: proc(mid: rl.Vector2) -> rl.Rectangle
+get_upper_obstacle_shape :: proc(mid: rl.Vector2) -> ShapeRect
 {
-    pos := rl.Vector2 { -OBSTACLE_WIDTH/2, -(OBSTACLE_VERTICAL_SPACING/2+OBSTACLE_HEIGHT) } + mid
+    center := rl.Vector2 { 0, -OBSTACLE_VERTICAL_SPACING/2 - OBSTACLE_HEIGHT/2 } + mid
 
-    return rl.Rectangle {
-        x = pos.x,
-        y = pos.y,
-        width = OBSTACLE_WIDTH,
-        height = OBSTACLE_HEIGHT,
+    return {
+        center = center,
+        size = OBSTACLE_SIZE,
     }
 }
 
-get_lower_obstacle_rect :: proc(mid: rl.Vector2) -> rl.Rectangle
+get_lower_obstacle_shape :: proc(mid: rl.Vector2) -> ShapeRect
 {
-    pos := rl.Vector2 { -OBSTACLE_WIDTH/2, OBSTACLE_VERTICAL_SPACING/2 } + mid
+    center := rl.Vector2 { 0, OBSTACLE_VERTICAL_SPACING/2 + OBSTACLE_HEIGHT/2 } + mid
 
-    return rl.Rectangle {
-        x = pos.x,
-        y = pos.y,
-        width = OBSTACLE_WIDTH,
-        height = OBSTACLE_HEIGHT,
+    return {
+        center = center,
+        size = OBSTACLE_SIZE,
     }
 }

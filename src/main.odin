@@ -49,8 +49,8 @@ setup_game :: proc()
     score = 0
 
     bird = {
-        position = rl.Vector2 { 0, (WINDOW_HEIGHT - BIRD_HEIGHT) / 2.0 },
-        velocity = {}
+        position = rl.Vector2 { BIRD_WIDTH/2.0, WINDOW_HEIGHT/2.0 },
+        velocity = {},
     }
 
     obstacle_pool.cooldown = 0
@@ -83,8 +83,8 @@ update :: proc()
 draw :: proc()
 {
     // Draw bird
-    bird_rect := get_bird_rect()
-    rl.DrawRectangleRec(bird_rect, rl.BLACK)
+    bird_shape := get_bird_shape()
+    draw_shape(bird_shape, rl.BLACK)
     
     // Draw obstacles
     obstacle_texture := get_asset(.TEXTURE_OBSTACLE)
@@ -96,11 +96,14 @@ draw :: proc()
             continue
         }
 
-        upper_rect := get_upper_obstacle_rect(e.middle)
-        lower_rect := get_lower_obstacle_rect(e.middle)
+        upper_shape := get_upper_obstacle_shape(e.middle)
+        lower_shape := get_lower_obstacle_shape(e.middle)
 
-        rl.DrawTextureV(obstacle_texture, rl.Vector2 { upper_rect.x, upper_rect.y }, rl.WHITE)
-        rl.DrawTextureV(obstacle_texture, rl.Vector2 { lower_rect.x, lower_rect.y }, rl.WHITE)
+        upper_origin := get_shape_rect_rl_origin(upper_shape)
+        lower_origin := get_shape_rect_rl_origin(lower_shape)
+
+        rl.DrawTextureV(obstacle_texture, upper_origin, rl.WHITE)
+        rl.DrawTextureV(obstacle_texture, lower_origin, rl.WHITE)
     }
 
     s := fmt.tprint(score)
