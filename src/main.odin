@@ -49,7 +49,7 @@ setup_game :: proc()
     score = 0
 
     player = {
-        position = { PLAYER_WIDTH/2.0, WINDOW_HEIGHT/2.0 },
+        position = { WINDOW_WIDTH/3.0, WINDOW_HEIGHT/2.0 },
         velocity = {},
     }
 
@@ -83,8 +83,10 @@ update :: proc()
 draw :: proc()
 {
     // Draw player
+    player_texture := get_asset(.TEXTURE_PLAYER)
     player_shape := get_player_shape()
-    draw_shape(player_shape, rl.BLACK)
+    player_display_center := get_shape_center(player_shape) + PLAYER_DISPLAY_OFFSET
+    draw_texture_with_center(player_texture, player_display_center)
     
     // Draw obstacles
     obstacle_texture := get_asset(.TEXTURE_OBSTACLE)
@@ -119,6 +121,13 @@ draw :: proc()
     {
         draw_text_centered(rl.GetFontDefault(), "YOU LOST", 55, 5, rl.YELLOW)
     }
+}
+
+draw_texture_with_center :: proc(texture: rl.Texture2D, center: rl.Vector2)
+{
+    texture_size := rl.Vector2 { f32(texture.width), f32(texture.height) }
+    texture_origin := center - texture_size/2
+    rl.DrawTextureV(texture, texture_origin, rl.WHITE)
 }
 
 draw_text_centered_horizontaly :: proc(y: f32, font: rl.Font, text: cstring, font_size: f32, spacing: f32, color: rl.Color)

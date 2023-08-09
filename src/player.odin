@@ -5,9 +5,8 @@ import rl "vendor:raylib"
 PLAYER_GRAVITY_FORCE :: 36
 PLAYER_JUMP_FORCE :: 8
 
-PLAYER_WIDTH :: 40
-PLAYER_HEIGHT :: 40
-PLAYER_SIZE :: rl.Vector2 { PLAYER_WIDTH, PLAYER_HEIGHT }
+PLAYER_DISPLAY_OFFSET :: rl.Vector2 { 0, -6 }
+PLAYER_RADIUS :: 23
 
 Player :: struct
 {
@@ -33,8 +32,8 @@ update_player :: proc(delta_time: f32)
 
 get_player_shape :: proc() -> Shape
 {
-    return ShapeRect {
+    return ShapeCircle {
         center = player.position,
-        size = PLAYER_SIZE,
+        radius = PLAYER_RADIUS,
     }
 }

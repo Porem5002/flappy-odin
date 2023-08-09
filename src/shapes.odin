@@ -43,6 +43,19 @@ shape_rect_to_rl_rect :: proc(shape: ShapeRect) -> rl.Rectangle
     }
 }
 
+get_shape_center :: proc(shape: Shape) -> rl.Vector2
+{
+    switch s in shape 
+    {
+        case ShapeRect:
+            return s.center
+        case ShapeCircle:
+            return s.center
+    }
+
+    panic("unreachable")
+}
+
 draw_shape :: proc(shape: Shape, color: rl.Color)
 {
     switch s in shape 
