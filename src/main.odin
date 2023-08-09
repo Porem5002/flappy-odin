@@ -48,8 +48,8 @@ setup_game :: proc()
     state = .START
     score = 0
 
-    bird = {
-        position = rl.Vector2 { BIRD_WIDTH/2.0, WINDOW_HEIGHT/2.0 },
+    player = {
+        position = { PLAYER_WIDTH/2.0, WINDOW_HEIGHT/2.0 },
         velocity = {},
     }
 
@@ -69,7 +69,7 @@ update :: proc()
                 state = .PLAY
             }
         case .PLAY:
-            update_bird(delta_time)
+            update_player(delta_time)
             update_obstacle_spawning(delta_time)
             update_obstacles(delta_time)
         case .LOST:
@@ -82,9 +82,9 @@ update :: proc()
 
 draw :: proc()
 {
-    // Draw bird
-    bird_shape := get_bird_shape()
-    draw_shape(bird_shape, rl.BLACK)
+    // Draw player
+    player_shape := get_player_shape()
+    draw_shape(player_shape, rl.BLACK)
     
     // Draw obstacles
     obstacle_texture := get_asset(.TEXTURE_OBSTACLE)

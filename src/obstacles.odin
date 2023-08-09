@@ -18,7 +18,7 @@ OBSTACLE_SPAWN_COOLDOWN :: 1.5
 ObstacleColumn :: struct
 {
     active: bool,
-    bird_inscore: bool,
+    player_inscore: bool,
     middle: rl.Vector2,
 }
 
@@ -43,25 +43,25 @@ update_obstacles :: proc(delta_time: f32)
 
         e.middle += rl.Vector2 { -1, 0 } * OBSTACLE_SPEED * delta_time
 
-        bird_shape := get_bird_shape()
+        player_shape := get_player_shape()
         upper_shape := get_upper_obstacle_shape(e.middle)
         lower_shape := get_lower_obstacle_shape(e.middle)
 
-        if(check_shape_collision(bird_shape, upper_shape) ||
-           check_shape_collision(bird_shape, lower_shape))
+        if(check_shape_collision(player_shape, upper_shape) ||
+           check_shape_collision(player_shape, lower_shape))
         {
             state = .LOST
         }
 
         score_area := get_score_area_shape(e.middle)
 
-        if(!e.bird_inscore && check_shape_collision(bird_shape, score_area))
+        if(!e.player_inscore && check_shape_collision(player_shape, score_area))
         {
-            e.bird_inscore = true
+            e.player_inscore = true
         }
-        else if(e.bird_inscore && !check_shape_collision(bird_shape, score_area))
+        else if(e.player_inscore && !check_shape_collision(player_shape, score_area))
         {
-            e.bird_inscore = false
+            e.player_inscore = false
             score += 1
         }
 
