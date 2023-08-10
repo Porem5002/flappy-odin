@@ -1,5 +1,6 @@
 package main
 
+import "core:math"
 import "core:fmt"
 import "core:strings"
 import c "core:c/libc"
@@ -29,12 +30,14 @@ main :: proc()
 
     for !rl.WindowShouldClose()
     {
-        update()
+        delta_time := rl.GetFrameTime()
+
+        update(delta_time)
 
         rl.ClearBackground(rl.LIGHTGRAY)
         rl.BeginDrawing()
         
-        draw()
+        draw(delta_time)
 
         rl.EndDrawing()
     }
@@ -57,10 +60,8 @@ setup_game :: proc()
     clear_obstacles()
 }
 
-update :: proc()
+update :: proc(delta_time: f32)
 {
-    delta_time := rl.GetFrameTime()
-    
     switch(state)
     {
         case .START:
@@ -80,14 +81,17 @@ update :: proc()
     }
 }
 
-draw :: proc()
+draw :: proc(delta_time: f32)
 {
     // Draw player
     player_texture := get_asset(.TEXTURE_PLAYER)
     player_shape := get_player_shape()
-    player_display_center := get_shape_center(player_shape) + PLAYER_DISPLAY_OFFSET
-    draw_texture_with_center(player_texture, player_display_center)
-    
+
+    player_rotation := math.atan2_f32(-player.velocity.y, delta_time*OBSTACLE_SPEED)
+    player_rotation = -math.to_degrees(player_rotation)
+    origin_offset := rl.Vector2 { 0.5, 0.5757 }
+    draw_texture_with_center(player_texture, get_shape_center(player_shape), origin_offset, player_rotation)
+
     // Draw obstacles
     obstacle_texture := get_asset(.TEXTURE_OBSTACLE)
 
@@ -123,11 +127,13 @@ draw :: proc()
     }
 }
 
-draw_texture_with_center :: proc(texture: rl.Texture2D, center: rl.Vector2)
+draw_texture_with_center :: proc(texture: rl.Texture2D, center: rl.Vector2, origin_offset: rl.Vector2 = { 0.5, 0.5 }, rotation: f32 = 0)
 {
-    texture_size := rl.Vector2 { f32(texture.width), f32(texture.height) }
-    texture_origin := center - texture_size/2
-    rl.DrawTextureV(texture, texture_origin, rl.WHITE)
+    source_rect := rl.Rectangle { x = 0, y = 0, width = f32(texture.width), height = f32(texture.height) }
+    dest_rect := rl.Rectangle { x = center.x, y = center.y, width = f32(texture.width), height = f32(texture.height) }
+    origin_offset := origin_offset * rl.Vector2 { f32(texture.width), f32(texture.height) }
+
+    rl.DrawTexturePro(texture, source_rect, dest_rect, origin_offset, rotation, rl.WHITE)
 }
 
 draw_text_centered_horizontaly :: proc(y: f32, font: rl.Font, text: cstring, font_size: f32, spacing: f32, color: rl.Color)
