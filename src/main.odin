@@ -39,8 +39,21 @@ main :: proc()
 
         rl.ClearBackground(rl.LIGHTGRAY)
         rl.BeginDrawing()
-        
-        draw(delta_time)
+
+            rl.BeginMode2D(game_camera)
+                draw(delta_time)
+            rl.EndMode2D()
+
+            // Draw Side Bars
+            if(rl.IsWindowFullscreen())
+            {
+                monitor := rl.GetCurrentMonitor()
+                mwidth, mheight := get_monitor_dimensions(monitor)
+                bar_width, bar_height := get_black_bar_size(mwidth, mheight)
+
+                rl.DrawRectangle(0, 0, bar_width, bar_height, rl.BLACK)
+                rl.DrawRectangle(mwidth - bar_width, mheight - bar_height, bar_width, bar_height, rl.BLACK)
+            }
 
         rl.EndDrawing()
     }
@@ -66,6 +79,11 @@ setup_game :: proc()
 
 update :: proc(delta_time: f32)
 {
+    if(rl.IsKeyPressed(.F))
+    {
+        toggle_fullscreen()
+    }
+
     switch(state)
     {
         case .START:
