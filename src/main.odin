@@ -7,6 +7,9 @@ import c "core:c/libc"
 
 import rl "vendor:raylib"
 
+SCREEN_TINT_ON_PAUSE := rl.Color { a = 100 }
+UI_TEXT_COLOR := rl.YELLOW
+
 TARGET_FPS :: 60
 WINDOW_WIDTH :: 700
 WINDOW_HEIGHT :: 700
@@ -112,19 +115,22 @@ draw :: proc(delta_time: f32)
         rl.DrawTextureV(obstacle_texture, lower_origin, rl.WHITE)
     }
 
-    s := fmt.tprint(score)
-    cs := strings.clone_to_cstring(s)
-
-    draw_text_centered_horizontaly(25, rl.GetFontDefault(), cs, 55, 3, rl.YELLOW) 
-
+    // Darken screen and draw state specific text
     if(state == .START)
     {
-        draw_text_centered(rl.GetFontDefault(), "Press ENTER to start the game", 35, 3, rl.YELLOW)
+        rl.DrawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, SCREEN_TINT_ON_PAUSE)
+        draw_text_centered(rl.GetFontDefault(), "Press ENTER to start the game", 35, 3, UI_TEXT_COLOR)
     }
     else if(state == .LOST)
     {
-        draw_text_centered(rl.GetFontDefault(), "YOU LOST", 55, 5, rl.YELLOW)
+        rl.DrawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, SCREEN_TINT_ON_PAUSE)
+        draw_text_centered(rl.GetFontDefault(), "YOU LOST", 55, 5, UI_TEXT_COLOR)
     }
+
+    // Draw Score Displayer
+    s := fmt.tprint(score)
+    cs := strings.clone_to_cstring(s)
+    draw_text_centered_horizontaly(25, rl.GetFontDefault(), cs, 55, 3, UI_TEXT_COLOR) 
 }
 
 draw_texture_with_center :: proc(texture: rl.Texture2D, center: rl.Vector2, origin_offset: rl.Vector2 = { 0.5, 0.5 }, rotation: f32 = 0)
