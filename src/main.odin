@@ -89,11 +89,9 @@ draw :: proc(delta_time: f32)
 {
     // Draw player
     player_texture := get_asset(.TEXTURE_PLAYER)
-    player_shape := get_player_shape()
-
     player_rotation := -math.to_degrees(player.current_rotation)
     origin_offset := rl.Vector2 { 0.5, 0.5757 }
-    draw_texture_with_center(player_texture, get_shape_center(player_shape), origin_offset, player_rotation)
+    draw_texture_with_center(player_texture, player.position, origin_offset, player_rotation)
 
     // Draw obstacles
     obstacle_texture := get_asset(.TEXTURE_OBSTACLE)
@@ -108,11 +106,8 @@ draw :: proc(delta_time: f32)
         upper_shape := get_upper_obstacle_shape(e.middle)
         lower_shape := get_lower_obstacle_shape(e.middle)
 
-        upper_origin := get_shape_rect_rl_origin(upper_shape)
-        lower_origin := get_shape_rect_rl_origin(lower_shape)
-
-        rl.DrawTextureV(obstacle_texture, upper_origin, rl.WHITE)
-        rl.DrawTextureV(obstacle_texture, lower_origin, rl.WHITE)
+        draw_texture_with_center(obstacle_texture, upper_shape.center)
+        draw_texture_with_center(obstacle_texture, lower_shape.center)
     }
 
     // Darken screen and draw state specific text
