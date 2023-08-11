@@ -28,6 +28,13 @@ update_player :: proc(delta_time: f32)
     }
 
     player.position += player.velocity
+
+    // Lose if player is out of the screen
+    if(player.position.y+PLAYER_RADIUS*2 <= 0 ||
+       player.position.y-PLAYER_RADIUS*2 >= WINDOW_HEIGHT)
+    {
+        state = .LOST
+    }
 }
 
 get_player_shape :: proc() -> Shape
