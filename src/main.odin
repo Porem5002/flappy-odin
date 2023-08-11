@@ -53,7 +53,8 @@ setup_game :: proc()
 
     player = {
         position = { WINDOW_WIDTH/3.0, WINDOW_HEIGHT/2.0 },
-        velocity = {},
+        velocity_y = 0,
+        current_rotation = 0,
     }
 
     obstacle_pool.cooldown = 0
@@ -87,8 +88,7 @@ draw :: proc(delta_time: f32)
     player_texture := get_asset(.TEXTURE_PLAYER)
     player_shape := get_player_shape()
 
-    player_rotation := math.atan2_f32(-player.velocity.y, delta_time*OBSTACLE_SPEED)
-    player_rotation = -math.to_degrees(player_rotation)
+    player_rotation := -math.to_degrees(player.current_rotation)
     origin_offset := rl.Vector2 { 0.5, 0.5757 }
     draw_texture_with_center(player_texture, get_shape_center(player_shape), origin_offset, player_rotation)
 
