@@ -7,7 +7,7 @@ import rl "vendor:raylib"
 PLAYER_GRAVITY_FORCE :: 36
 PLAYER_JUMP_FORCE :: 8
 
-PLAYER_RADIUS :: 23
+PLAYER_RADIUS :: 25
 PLAYER_ROTATION_SPEED :: math.TAU
 
 Player :: struct

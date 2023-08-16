@@ -6,14 +6,17 @@ import rl "vendor:raylib"
 
 score : uint = 0
 
-OBSTACLE_VERTICAL_SPACING :: 180
-
 OBSTACLE_WIDTH :: 100
 OBSTACLE_HEIGHT :: 600
 OBSTACLE_SIZE :: rl.Vector2 { OBSTACLE_WIDTH, OBSTACLE_HEIGHT }
 
-OBSTACLE_SPEED :: 235
 OBSTACLE_SPAWN_COOLDOWN :: 1.5
+OBSTACLE_SPEED :: 300
+OBSTACLE_VERTICAL_SPACING :: 140
+
+// Linmits in percentage of the screen size of the position in the y  axis of an obstacle
+OBSTACLE_MAX_Y_PERCENT :: 77
+OBSTACLE_MIN_Y_PERCENT :: 25
 
 ObstacleColumn :: struct
 {
@@ -81,7 +84,10 @@ update_obstacle_spawning :: proc(delta_time: f32)
     }
 
     obstacle_pool.cooldown = OBSTACLE_SPAWN_COOLDOWN
-    mid := rl.Vector2 { WINDOW_WIDTH + OBSTACLE_WIDTH/2, f32(rl.GetRandomValue(15, 95)) / 100.0 * WINDOW_HEIGHT }
+    
+    rand_percent_y :=  f32(rl.GetRandomValue(OBSTACLE_MIN_Y_PERCENT, OBSTACLE_MAX_Y_PERCENT)) / 100.0
+    mid := rl.Vector2 { WINDOW_WIDTH + OBSTACLE_WIDTH/2, rand_percent_y * WINDOW_HEIGHT }
+
     add_obstacle_at_pos(mid)
 }
 
