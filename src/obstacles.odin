@@ -35,7 +35,7 @@ obstacle_pool := ObstaclePool { pool = {} }
 
 fixed_update_obstacles :: proc()
 {
-    for i in 0..<len(obstacle_pool.pool)
+    for _, i in obstacle_pool.pool
     {
         e := &obstacle_pool.pool[i]
 
@@ -93,7 +93,7 @@ update_obstacle_spawning :: proc(delta_time: f32)
 
 clear_obstacles :: proc()
 {
-    for i in 0..<len(obstacle_pool.pool)
+    for _, i in obstacle_pool.pool
     {
         e := &obstacle_pool.pool[i]
         e.active = false
@@ -107,7 +107,7 @@ add_obstacle_at_pos :: proc(mid: rl.Vector2)
         middle = mid,
     }
 
-    for i in 0..<len(obstacle_pool.pool)
+    for _, i in obstacle_pool.pool
     {
         e := &obstacle_pool.pool[i]
 
