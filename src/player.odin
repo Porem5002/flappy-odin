@@ -19,16 +19,16 @@ Player :: struct
 
 player := Player {}
 
-update_player :: proc(delta_time: f32)
+fixed_update_player :: proc()
 {
     // Handle Movement
-    if rl.IsKeyPressed(.SPACE)
+    if is_key_pressed_once(.SPACE)
     {
         player.velocity_y = PLAYER_JUMP_FORCE
     }
     else
     {
-        player.velocity_y -= PLAYER_GRAVITY_FORCE * delta_time
+        player.velocity_y -= PLAYER_GRAVITY_FORCE * FIXED_DELTA_TIME
     }
 
     player.position += rl.Vector2 { 0, -1 } * player.velocity_y
@@ -41,8 +41,8 @@ update_player :: proc(delta_time: f32)
     }
 
     // Update rotation
-    target_rotation := math.atan2_f32(player.velocity_y, delta_time * OBSTACLE_SPEED)
-    player.current_rotation += (target_rotation - player.current_rotation) * PLAYER_ROTATION_SPEED * delta_time
+    target_rotation := math.atan2_f32(player.velocity_y, FIXED_DELTA_TIME * OBSTACLE_SPEED)
+    player.current_rotation += (target_rotation - player.current_rotation) * PLAYER_ROTATION_SPEED * FIXED_DELTA_TIME
 }
 
 get_player_shape :: proc() -> Shape

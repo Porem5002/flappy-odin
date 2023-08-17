@@ -33,7 +33,7 @@ ObstaclePool :: struct
 
 obstacle_pool := ObstaclePool { pool = {} }
 
-update_obstacles :: proc(delta_time: f32)
+fixed_update_obstacles :: proc()
 {
     for i in 0..<len(obstacle_pool.pool)
     {
@@ -44,7 +44,7 @@ update_obstacles :: proc(delta_time: f32)
             continue
         }
 
-        e.middle += rl.Vector2 { -1, 0 } * OBSTACLE_SPEED * delta_time
+        e.middle += rl.Vector2 { -1, 0 } * OBSTACLE_SPEED * FIXED_DELTA_TIME
 
         player_shape := get_player_shape()
         upper_shape := get_upper_obstacle_shape(e.middle)

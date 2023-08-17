@@ -11,6 +11,8 @@ SCREEN_TINT_ON_PAUSE := rl.Color { a = 100 }
 UI_TEXT_COLOR := rl.YELLOW
 
 TARGET_FPS :: 60
+FIXED_DELTA_TIME :: 1.0 / 60.0
+
 WINDOW_WIDTH :: 700
 WINDOW_HEIGHT :: 700
 
@@ -31,9 +33,21 @@ main :: proc()
     load_assets()
     setup_game()
 
+    fixed_timer : f32 = 0
+
     for !rl.WindowShouldClose()
     {
         delta_time := rl.GetFrameTime()
+        fixed_timer -= delta_time
+
+        fill_key_cache()
+
+        if fixed_timer <= 0
+        {
+            fixed_timer = FIXED_DELTA_TIME
+            fixed_update()
+            clear_key_cache()
+        }
 
         update(delta_time)
 
@@ -77,6 +91,15 @@ setup_game :: proc()
     clear_obstacles()
 }
 
+fixed_update :: proc()
+{
+    if(state == .PLAY)
+    {
+        fixed_update_player()
+        fixed_update_obstacles()
+    }
+}
+
 update :: proc(delta_time: f32)
 {
     if(rl.IsKeyPressed(.F))
@@ -92,9 +115,7 @@ update :: proc(delta_time: f32)
                 state = .PLAY
             }
         case .PLAY:
-            update_player(delta_time)
             update_obstacle_spawning(delta_time)
-            update_obstacles(delta_time)
         case .LOST:
             if(rl.IsKeyPressed(.ENTER))
             {
