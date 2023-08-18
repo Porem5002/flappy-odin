@@ -1,5 +1,6 @@
 package main
 
+import "core:c"
 import "core:fmt"
 
 import rl "vendor:raylib"
@@ -21,11 +22,16 @@ OBSTACLE_SYMBOL_COUNT :: 4
 OBSTACLE_MAX_Y_PERCENT :: 77
 OBSTACLE_MIN_Y_PERCENT :: 25
 
+ObstacleSymbolGroup :: distinct [OBSTACLE_SYMBOL_COUNT]asset_id
+
 ObstacleColumn :: struct
 {
     active: bool,
     player_inscore: bool,
     middle: rl.Vector2,
+    
+    upper_syms: ObstacleSymbolGroup,
+    lower_syms: ObstacleSymbolGroup,
 }
 
 ObstaclePool :: struct
@@ -90,8 +96,21 @@ update_obstacle_spawning :: proc(delta_time: f32)
     
     rand_percent_y :=  f32(rl.GetRandomValue(OBSTACLE_MIN_Y_PERCENT, OBSTACLE_MAX_Y_PERCENT)) / 100.0
     mid := rl.Vector2 { WINDOW_WIDTH + OBSTACLE_WIDTH/2, rand_percent_y * WINDOW_HEIGHT }
+    
+    // Setup obstacle symbols
+    first, last := get_symbol_id_interval()
+    upper_syms, lower_syms: ObstacleSymbolGroup
 
-    add_obstacle_at_pos(mid)
+    for _, i in upper_syms
+    {
+        upper_id := rl.GetRandomValue(c.int(first), c.int(last))
+        upper_syms[i] = asset_id(upper_id)
+
+        lower_id := rl.GetRandomValue(c.int(first), c.int(last))
+        lower_syms[i] = asset_id(lower_id)
+    }
+
+    add_obstacle(mid, upper_syms, lower_syms)
 }
 
 clear_obstacles :: proc()
@@ -103,11 +122,13 @@ clear_obstacles :: proc()
     }
 }
 
-add_obstacle_at_pos :: proc(mid: rl.Vector2)
+add_obstacle :: proc(mid: rl.Vector2, upper_syms, lower_syms: ObstacleSymbolGroup)
 {
     o := ObstacleColumn {
         active = true,
         middle = mid,
+        upper_syms = upper_syms,
+        lower_syms = lower_syms,
     }
 
     for _, i in obstacle_pool.pool
