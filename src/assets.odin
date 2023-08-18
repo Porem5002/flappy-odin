@@ -4,7 +4,7 @@ import rl "vendor:raylib"
 
 asset_id :: enum uint
 {
-    TEXTURE_OBSTACLE,
+    TEXTURE_SYMBOL_WOW,
     TEXTURE_PLAYER,
 }
 
@@ -16,8 +16,8 @@ load_assets :: proc()
     {
         switch id
         {
-            case .TEXTURE_OBSTACLE:
-                assets[id] = rl.LoadTexture("assets/obstacle.png")
+            case .TEXTURE_SYMBOL_WOW:
+                assets[id] = rl.LoadTexture("assets/symbols/web_of_wyrd.png")
             case .TEXTURE_PLAYER:
                 assets[id] = rl.LoadTexture("assets/player.png")
         }

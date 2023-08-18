@@ -133,8 +133,6 @@ draw :: proc(delta_time: f32)
     draw_texture_with_center(player_texture, player.position, origin_offset, player_rotation)
 
     // Draw obstacles
-    obstacle_texture := get_asset(.TEXTURE_OBSTACLE)
-
     for e in obstacle_pool.pool
     {
         if(!e.active)
@@ -145,8 +143,14 @@ draw :: proc(delta_time: f32)
         upper_shape := get_upper_obstacle_shape(e.middle)
         lower_shape := get_lower_obstacle_shape(e.middle)
 
-        draw_texture_with_center(obstacle_texture, upper_shape.center)
-        draw_texture_with_center(obstacle_texture, lower_shape.center)
+        draw_shape(upper_shape, OBSTACLE_MAIN_COLOR)
+        draw_shape(lower_shape, OBSTACLE_MAIN_COLOR)
+
+        for point in get_obstacle_symbol_points()
+        {
+            draw_texture_with_center(get_asset(.TEXTURE_SYMBOL_WOW), upper_shape.center + point, scale = 0.25)
+            draw_texture_with_center(get_asset(.TEXTURE_SYMBOL_WOW), lower_shape.center + point, scale = 0.25)
+        }
     }
 
     // Darken screen and draw state specific text
@@ -167,11 +171,14 @@ draw :: proc(delta_time: f32)
     draw_text_centered_horizontaly(25, rl.GetFontDefault(), cs, 55, 3, UI_TEXT_COLOR) 
 }
 
-draw_texture_with_center :: proc(texture: rl.Texture2D, center: rl.Vector2, origin_offset: rl.Vector2 = { 0.5, 0.5 }, rotation: f32 = 0)
+draw_texture_with_center :: proc(texture: rl.Texture2D, center: rl.Vector2, origin_offset: rl.Vector2 = { 0.5, 0.5 }, rotation: f32 = 0, scale: f32 = 1)
 {
+    scaled_width := f32(texture.width) * scale
+    scaled_height := f32(texture.height) * scale
+
     source_rect := rl.Rectangle { x = 0, y = 0, width = f32(texture.width), height = f32(texture.height) }
-    dest_rect := rl.Rectangle { x = center.x, y = center.y, width = f32(texture.width), height = f32(texture.height) }
-    origin_offset := origin_offset * rl.Vector2 { f32(texture.width), f32(texture.height) }
+    dest_rect := rl.Rectangle { x = center.x, y = center.y, width = scaled_width, height = scaled_height }
+    origin_offset := origin_offset * rl.Vector2 { scaled_width, scaled_height }
 
     rl.DrawTexturePro(texture, source_rect, dest_rect, origin_offset, rotation, rl.WHITE)
 }
