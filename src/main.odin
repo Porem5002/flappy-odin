@@ -28,6 +28,8 @@ state : State = {}
 
 main :: proc()
 {
+    rl.SetTraceLogLevel(ODIN_DEBUG ? .ALL : .NONE)
+
     rl.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_NAME)
     rl.SetTargetFPS(TARGET_FPS)
 
