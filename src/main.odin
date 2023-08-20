@@ -13,6 +13,7 @@ UI_TEXT_COLOR := rl.YELLOW
 TARGET_FPS :: 60
 FIXED_DELTA_TIME :: 1.0 / 60.0
 
+WINDOW_NAME :: "Flappy Odin"
 WINDOW_WIDTH :: 700
 WINDOW_HEIGHT :: 700
 
@@ -27,7 +28,7 @@ state : State = {}
 
 main :: proc()
 {
-    rl.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Raylib wth Odin!")
+    rl.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_NAME)
     rl.SetTargetFPS(TARGET_FPS)
 
     load_assets()
