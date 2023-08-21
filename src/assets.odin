@@ -9,7 +9,9 @@ asset_id :: enum uint
     TEXTURE_SYMBOL_ODIN_HORNS,
     TEXTURE_SYMBOL_VALKNUT,
     TEXTURE_SYMBOL_WOW,
+    
     TEXTURE_PLAYER,
+    TEXTURE_BACKGROUND,
 }
 
 asset :: struct
@@ -49,6 +51,10 @@ load_assets :: proc()
                 a.texture = rl.LoadTexture("assets/symbols/web_of_wyrd.png")
                 a.origin = { 0.5, 0.5 }
                 a.scale = 0.25
+            case .TEXTURE_BACKGROUND:
+                a.texture = rl.LoadTexture("assets/background.png")
+                a.origin = { 0.5, 0.5 }
+                a.scale = 1
             case .TEXTURE_PLAYER:
                 a.texture = rl.LoadTexture("assets/player.png")
                 a.origin = { 0.5, 0.5757 }

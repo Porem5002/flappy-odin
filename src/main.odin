@@ -8,7 +8,8 @@ import c "core:c/libc"
 import rl "vendor:raylib"
 
 SCREEN_TINT_ON_PAUSE := rl.Color { a = 100 }
-UI_TEXT_COLOR := rl.YELLOW
+BACKGROUND_COLOR := rl.Color { r = 201, g = 213, b = 233, a = 255 }
+UI_TEXT_COLOR := rl.Color { r = 255, g = 180, b = 0, a = 255 }
 
 TARGET_FPS :: 60
 FIXED_DELTA_TIME :: 1.0 / 60.0
@@ -54,7 +55,7 @@ main :: proc()
 
         update(delta_time)
 
-        rl.ClearBackground(rl.LIGHTGRAY)
+        rl.ClearBackground(BACKGROUND_COLOR)
         rl.BeginDrawing()
 
             rl.BeginMode2D(game_camera)
@@ -129,6 +130,10 @@ update :: proc(delta_time: f32)
 
 draw :: proc(delta_time: f32)
 {
+    // Draw Background
+    background_asset := get_asset(.TEXTURE_BACKGROUND)
+    draw_asset(background_asset, { WINDOW_WIDTH/2.0, WINDOW_HEIGHT/2.0 })
+
     // Draw player
     player_asset := get_asset(.TEXTURE_PLAYER)
     player_rotation := -math.to_degrees(player.current_rotation)
