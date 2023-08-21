@@ -35,6 +35,11 @@ main :: proc()
     rl.SetTargetFPS(TARGET_FPS)
 
     load_assets()
+
+    icon_texture := get_asset(.TEXTURE_PLAYER).texture
+    icon := rl.LoadImageFromTexture(icon_texture)
+    rl.SetWindowIcon(icon)
+
     setup_game()
 
     fixed_timer : f32 = 0
@@ -76,6 +81,7 @@ main :: proc()
         rl.EndDrawing()
     }
 
+    rl.UnloadImage(icon)
     unload_assets()
     rl.CloseWindow()
 }
