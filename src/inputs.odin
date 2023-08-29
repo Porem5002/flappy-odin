@@ -4,6 +4,11 @@ import "core:fmt"
 
 import rl "vendor:raylib"
 
+// Controls
+KEY_JUMP :: rl.KeyboardKey.SPACE
+KEY_PROCEED :: rl.KeyboardKey.ENTER
+KEY_FULLSCREEN :: rl.KeyboardKey.F
+
 key_cache := [u64(max(rl.KeyboardKey))+1]bool {}
 
 fill_key_cache :: proc()

@@ -112,7 +112,7 @@ fixed_update :: proc()
 
 update :: proc(delta_time: f32)
 {
-    if(rl.IsKeyPressed(.F))
+    if(rl.IsKeyPressed(KEY_FULLSCREEN))
     {
         toggle_fullscreen()
     }
@@ -120,14 +120,14 @@ update :: proc(delta_time: f32)
     switch(state)
     {
         case .START:
-            if(rl.IsKeyPressed(.ENTER))
+            if(rl.IsKeyPressed(KEY_PROCEED))
             {
                 state = .PLAY
             }
         case .PLAY:
             update_obstacle_spawning(delta_time)
         case .LOST:
-            if(rl.IsKeyPressed(.ENTER))
+            if(rl.IsKeyPressed(KEY_PROCEED))
             {
                 setup_game()
             }
@@ -136,9 +136,11 @@ update :: proc(delta_time: f32)
 
 draw :: proc(delta_time: f32)
 {
+    WINDOW_CENTER :: rl.Vector2 { WINDOW_WIDTH/2.0, WINDOW_HEIGHT/2.0 }
+
     // Draw Background
     background_asset := get_asset(.TEXTURE_BACKGROUND)
-    draw_asset(background_asset, { WINDOW_WIDTH/2.0, WINDOW_HEIGHT/2.0 })
+    draw_asset(background_asset, WINDOW_CENTER)
 
     // Draw player
     player_asset := get_asset(.TEXTURE_PLAYER)
@@ -173,12 +175,15 @@ draw :: proc(delta_time: f32)
     if(state == .START)
     {
         rl.DrawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, SCREEN_TINT_ON_PAUSE)
-        draw_text_centered(rl.GetFontDefault(), "Press ENTER to start the game", 35, 3, UI_TEXT_COLOR)
+        draw_text(rl.GetFontDefault(), "Press ENTER to start the game", WINDOW_CENTER, 35, 3, UI_TEXT_COLOR)
     }
     else if(state == .LOST)
     {
         rl.DrawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, SCREEN_TINT_ON_PAUSE)
-        draw_text_centered(rl.GetFontDefault(), "YOU LOST", 55, 5, UI_TEXT_COLOR)
+        draw_text(rl.GetFontDefault(), "YOU LOST", WINDOW_CENTER, 55, 5, UI_TEXT_COLOR)
+
+        LOST_STATE_HINT_TEXT_POSITION := WINDOW_CENTER + rl.Vector2 { 0, 1 } * 50
+        draw_text(rl.GetFontDefault(), "Press ENTER to continue", LOST_STATE_HINT_TEXT_POSITION, 22, 3.1, UI_TEXT_COLOR)
     }
 
     // Draw Score Displayer
@@ -211,12 +216,9 @@ draw_text_centered_horizontaly :: proc(y: f32, font: rl.Font, text: cstring, fon
     rl.DrawTextEx(font, text, text_position, font_size, spacing, color)
 }
 
-draw_text_centered :: proc(font: rl.Font, text: cstring, font_size: f32, spacing: f32, color: rl.Color)
+draw_text :: proc(font: rl.Font, text: cstring, position: rl.Vector2, font_size: f32, spacing: f32, color: rl.Color)
 {
     text_size := rl.MeasureTextEx(font, text, font_size, spacing)
-
-    text_position := rl.Vector2 { WINDOW_WIDTH, WINDOW_HEIGHT } - text_size
-    text_position /= 2
-    
+    text_position := position - text_size / 2.0
     rl.DrawTextEx(font, text, text_position, font_size, spacing, color)
 }
