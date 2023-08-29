@@ -1,0 +1,46 @@
+# Flappy Odin
+A flappy bird clone developed using the [Odin Programming Language](https://odin-lang.org/) and [Raylib](https://www.raylib.com/).
+
+## Install 
+To install the game checkout the Releases section and select the binaries that are compatible with your platform.
+
+If your current platform is not available for your platform, consider taking building the project for your platform, see how to do it [here](#build).
+
+## Play
+
+To play the game run the **executable** called **flappy_odin**.
+
+Controls:
+- **ESC** - Exit
+- **ENTER** - Proceed/Unpause 
+- **SPACE** - Jump
+- **F** - Toggle Fullscreen
+
+## Build
+
+If you want to build the project in your own machine you will need to have the [Odin Programming Language](https://odin-lang.org/) installed in your PC and make it accessible via your **PATH** environment variable.
+
+After doing this, run the following commands according to your platform and your needs.
+
+### On Windows
+Generate Release Build:
+```
+.\build.bat release
+```
+Generate Debug Build:
+```
+.\build.bat
+```
+
+### On Linux
+Generate Release Build:
+```
+make release
+```
+Generate Debug Build:
+```
+make
+```
+
+## License
+[MIT License](./License)
