@@ -4,7 +4,7 @@ A flappy bird clone developed using the [Odin Programming Language](https://odin
 ## Install 
 To install the game checkout the Releases section and select the binaries that are compatible with your platform.
 
-If your current platform is not available for your platform, consider taking building the project for your platform, see how to do it [here](#build).
+If there are no current releases available for your platform, consider building the project on your machine, see how to do it [here](#build).
 
 ## Play
 
@@ -43,4 +43,4 @@ make
 ```
 
 ## License
-[MIT License](./License)
+[MIT License](./LICENSE)
