@@ -4,8 +4,8 @@ import "core:math"
 
 import rl "vendor:raylib"
 
-PLAYER_GRAVITY_FORCE :: 36
-PLAYER_JUMP_FORCE :: 8
+PLAYER_GRAVITY_FORCE :: 29
+PLAYER_JUMP_FORCE :: 5
 
 PLAYER_RADIUS :: 25
 PLAYER_ROTATION_SPEED :: math.TAU
@@ -19,16 +19,17 @@ Player :: struct
 
 player := Player {}
 
-fixed_update_player :: proc()
+update_player :: proc(delta_time: f32)
 {
     // Handle Movement
-    if is_key_pressed_once(.SPACE)
+    if inputs.jump
     {
         player.velocity_y = PLAYER_JUMP_FORCE
+        inputs.jump = false
     }
     else
     {
-        player.velocity_y -= PLAYER_GRAVITY_FORCE * FIXED_DELTA_TIME
+        player.velocity_y -= PLAYER_GRAVITY_FORCE * delta_time
     }
 
     player.position += rl.Vector2 { 0, -1 } * player.velocity_y
@@ -41,8 +42,8 @@ fixed_update_player :: proc()
     }
 
     // Update rotation
-    target_rotation := math.atan2_f32(player.velocity_y, FIXED_DELTA_TIME * OBSTACLE_SPEED)
-    player.current_rotation += (target_rotation - player.current_rotation) * PLAYER_ROTATION_SPEED * FIXED_DELTA_TIME
+    target_rotation := math.atan2_f32(player.velocity_y, delta_time * OBSTACLE_SPEED)
+    player.current_rotation += (target_rotation - player.current_rotation) * PLAYER_ROTATION_SPEED * delta_time
 }
 
 get_player_shape :: proc() -> Shape

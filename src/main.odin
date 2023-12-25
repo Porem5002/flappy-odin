@@ -12,7 +12,7 @@ BACKGROUND_COLOR := rl.Color { r = 201, g = 213, b = 233, a = 255 }
 UI_TEXT_COLOR := rl.Color { r = 255, g = 180, b = 0, a = 255 }
 
 TARGET_FPS :: 60
-FIXED_DELTA_TIME :: 1.0 / 60.0
+FIXED_STEP :: 1.0 / 60.0
 
 WINDOW_NAME :: "Flappy Odin"
 WINDOW_WIDTH :: 700
@@ -30,7 +30,7 @@ state : State = {}
 main :: proc()
 {
     rl.SetTraceLogLevel(ODIN_DEBUG ? .ALL : .NONE)
-
+    rl.SetConfigFlags({ rl.ConfigFlag.VSYNC_HINT });
     rl.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_NAME)
     rl.SetTargetFPS(TARGET_FPS)
 
@@ -42,29 +42,23 @@ main :: proc()
 
     setup_game()
 
-    fixed_timer : f32 = 0
-
     for !rl.WindowShouldClose()
     {
-        delta_time := rl.GetFrameTime()
-        fixed_timer -= delta_time
+        gather_inputs()
 
-        fill_key_cache()
-
-        if fixed_timer <= 0
+        frame_time := rl.GetFrameTime()
+        
+        for frame_time > 0
         {
-            fixed_timer = FIXED_DELTA_TIME
-            fixed_update()
-            clear_key_cache()
+            delta_time := min(frame_time, FIXED_STEP)
+            update(delta_time)
+            frame_time -= delta_time
         }
 
-        update(delta_time)
-
-        rl.ClearBackground(BACKGROUND_COLOR)
         rl.BeginDrawing()
-
+            rl.ClearBackground(BACKGROUND_COLOR)
             rl.BeginMode2D(game_camera)
-                draw(delta_time)
+                draw()
             rl.EndMode2D()
 
             // Draw Side Bars
@@ -78,6 +72,7 @@ main :: proc()
                 rl.DrawRectangle(mwidth - bar_width, mheight - bar_height, bar_width, bar_height, rl.BLACK)
             }
 
+            rl.DrawFPS(10, 10)
         rl.EndDrawing()
     }
 
@@ -101,40 +96,36 @@ setup_game :: proc()
     clear_obstacles()
 }
 
-fixed_update :: proc()
-{
-    if(state == .PLAY)
-    {
-        fixed_update_player()
-        fixed_update_obstacles()
-    }
-}
-
 update :: proc(delta_time: f32)
 {
-    if(rl.IsKeyPressed(KEY_FULLSCREEN))
+    if(inputs.fullscreen)
     {
         toggle_fullscreen()
+        inputs.fullscreen = false
     }
 
     switch(state)
     {
         case .START:
-            if(rl.IsKeyPressed(KEY_PROCEED))
+            if(inputs.proceed)
             {
                 state = .PLAY
+                inputs.proceed = false
             }
         case .PLAY:
             update_obstacle_spawning(delta_time)
+            update_player(delta_time)
+            update_obstacles(delta_time)
         case .LOST:
-            if(rl.IsKeyPressed(KEY_PROCEED))
+            if(inputs.proceed)
             {
                 setup_game()
+                inputs.proceed = false
             }
     }
 }
 
-draw :: proc(delta_time: f32)
+draw :: proc()
 {
     WINDOW_CENTER :: rl.Vector2 { WINDOW_WIDTH/2.0, WINDOW_HEIGHT/2.0 }
 

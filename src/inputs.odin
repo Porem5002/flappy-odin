@@ -1,33 +1,23 @@
 package main
 
-import "core:fmt"
-
 import rl "vendor:raylib"
 
-// Controls
 KEY_JUMP :: rl.KeyboardKey.SPACE
 KEY_PROCEED :: rl.KeyboardKey.ENTER
 KEY_FULLSCREEN :: rl.KeyboardKey.F
 
-key_cache := [u64(max(rl.KeyboardKey))+1]bool {}
-
-fill_key_cache :: proc()
+input_data :: struct
 {
-    for key in rl.KeyboardKey
-    {
-        if(rl.IsKeyPressed(key))
-        {
-            key_cache[key] = true
-        }
-    }
+    jump: bool,
+    proceed: bool,
+    fullscreen: bool,
 }
 
-clear_key_cache :: proc()
-{
-    key_cache = {}
-}
+inputs := input_data {}
 
-is_key_pressed_once :: proc(key: rl.KeyboardKey) -> bool
+gather_inputs :: proc()
 {
-    return key_cache[key]
+    inputs.jump = rl.IsKeyPressed(KEY_JUMP)
+    inputs.proceed = rl.IsKeyPressed(KEY_PROCEED)
+    inputs.fullscreen = rl.IsKeyPressed(KEY_FULLSCREEN)
 }
