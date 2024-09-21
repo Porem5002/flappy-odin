@@ -7,9 +7,9 @@ import c "core:c/libc"
 
 import rl "vendor:raylib"
 
-SCREEN_TINT_ON_PAUSE := rl.Color { a = 100 }
-BACKGROUND_COLOR := rl.Color { r = 201, g = 213, b = 233, a = 255 }
-UI_TEXT_COLOR := rl.Color { r = 255, g = 180, b = 0, a = 255 }
+SCREEN_TINT_ON_PAUSE := rl.Color { 0, 0, 0, 100 }
+BACKGROUND_COLOR := rl.Color { 201, 213, 233, 255 }
+UI_TEXT_COLOR := rl.Color { 255, 180, 0, 255 }
 
 TARGET_FPS :: 60
 FIXED_STEP :: 1.0 / 60.0

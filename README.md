@@ -18,7 +18,7 @@ Controls:
 
 ## Build
 
-If you want to build the project in your own machine you will need to have the [Odin Programming Language](https://odin-lang.org/) installed in your PC and make it accessible via your **PATH** environment variable.
+If you want to build the project in your own machine you will need to have the [Odin Programming Language](https://odin-lang.org/) installed in your PC and make it accessible via your **PATH** environment variable. The version that is recommended to be used to build the project is [dev-2024-09](https://github.com/odin-lang/Odin/releases/tag/dev-2024-09).
 
 After doing this, run the following commands according to your platform and your needs.
 

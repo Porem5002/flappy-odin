@@ -15,7 +15,7 @@ OBSTACLE_SPAWN_COOLDOWN :: 1.5
 OBSTACLE_SPEED :: 300
 OBSTACLE_VERTICAL_SPACING :: 140
 
-OBSTACLE_MAIN_COLOR :: rl.Color { r = 28, g = 27, b = 26, a = 255 }
+OBSTACLE_MAIN_COLOR :: rl.Color { 28, 27, 26, 255 }
 OBSTACLE_SYMBOL_COUNT :: 4
 
 // Linmits in percentage of the screen size of the position in the y  axis of an obstacle
